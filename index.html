@@ -1,0 +1,944 @@
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Różowy Szydełkownik</title>
+<style>
+:root{
+  --pink:#e78bb2;
+  --pink-dark:#c75f91;
+  --pink-light:#fff0f6;
+  --pink-pale:#fff8fb;
+  --white:#ffffff;
+  --text:#573d4b;
+  --muted:#987d8b;
+  --border:#f0d7e3;
+  --green:#6b9e79;
+  --shadow:0 5px 22px #b35e8310;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--pink-pale);color:var(--text);
+  font-family:"Segoe UI",Arial,sans-serif;font-size:15px;
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,
+textarea:focus-visible{outline:3px solid #edb4d0;outline-offset:2px}
+header{
+  background:white;border-bottom:1px solid var(--border);
+  padding:19px clamp(14px,4vw,46px);
+  display:flex;justify-content:space-between;align-items:center;
+  gap:15px;flex-wrap:wrap;
+}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{
+  width:51px;height:51px;border-radius:17px;background:var(--pink-light);
+  display:grid;place-items:center;font-size:28px;
+}
+.brand h1{margin:0;font-family:Georgia,serif;font-size:clamp(20px,3vw,29px);color:#b85d89}
+.brand p{margin:4px 0 0;font-size:12px;color:var(--muted)}
+.date-label{font-size:12px;color:var(--muted);text-align:right}
+nav{
+  display:flex;gap:8px;padding:12px clamp(12px,4vw,46px);
+  background:#fffafd;border-bottom:1px solid var(--border);
+  overflow-x:auto;
+}
+.tab{
+  border:1px solid transparent;border-radius:12px;padding:11px 17px;
+  white-space:nowrap;background:transparent;color:var(--muted);
+}
+.tab.active{background:var(--pink-light);border-color:#f1c9dc;color:var(--pink-dark);font-weight:700}
+main{max-width:1150px;margin:auto;padding:clamp(15px,3vw,30px)}
+.page{display:none}
+.page.active{display:block}
+.heading{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:14px;flex-wrap:wrap;margin-bottom:20px;
+}
+h2{font-family:Georgia,serif;color:#b85d89;font-size:27px;margin:0 0 5px}
+.subtitle{font-size:13px;color:var(--muted);margin:0}
+.btn{
+  border:1px solid var(--border);background:white;color:var(--text);
+  padding:10px 14px;border-radius:11px;transition:.15s;
+}
+.btn:hover{border-color:var(--pink);background:#fff4f9}
+.btn.pink{background:var(--pink);color:white;border-color:var(--pink)}
+.btn.pink:hover{background:var(--pink-dark)}
+.btn.small{padding:7px 10px;font-size:12px}
+.btn.danger{color:#bb526a}
+.stats{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;margin-bottom:23px;
+}
+.stat{
+  background:white;border:1px solid var(--border);border-radius:16px;
+  padding:17px;box-shadow:var(--shadow);
+}
+.stat .icon{font-size:22px}
+.stat strong{display:block;font-size:27px;color:var(--pink-dark);margin:8px 0 3px}
+.stat span{font-size:12px;color:var(--muted)}
+.panel{
+  background:white;border:1px solid var(--border);
+  border-radius:17px;padding:19px;margin-bottom:18px;
+  box-shadow:var(--shadow);min-width:0;
+}
+.panel h3{font-size:16px;margin:0 0 15px;color:#a95880}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap}
+.order-list{display:grid;gap:12px}
+.order{
+  border:1px solid var(--border);border-radius:14px;padding:15px;
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;
+  align-items:center;background:white;
+}
+.order.completed{background:#fbfff9}
+.order.completed .order-name{text-decoration:line-through;color:#9eaa9e}
+.order-main{min-width:0}
+.order-top{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.order-name{font-weight:700;font-size:16px;overflow-wrap:anywhere}
+.pill{
+  border-radius:20px;padding:4px 9px;font-size:11px;
+  background:var(--pink-light);color:var(--pink-dark);
+}
+.pill.done{background:#eaf6e9;color:#55825d}
+.order-meta{font-size:12px;color:var(--muted);margin-top:7px;line-height:1.7}
+.order-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.qty{
+  display:flex;align-items:center;gap:12px;border:1px solid var(--border);
+  border-radius:11px;padding:5px;background:#fff9fc;
+}
+.qty button{
+  width:30px;height:30px;border:0;border-radius:8px;
+  background:var(--pink-light);color:var(--pink-dark);font-size:19px;
+}
+.qty strong{min-width:19px;text-align:center}
+.check-label{display:flex;align-items:center;gap:7px;font-size:12px;cursor:pointer}
+input[type=checkbox]{accent-color:var(--pink-dark);width:17px;height:17px}
+.empty{
+  text-align:center;padding:38px 15px;border:1px dashed var(--border);
+  border-radius:14px;color:var(--muted);line-height:1.8;background:#fffcfe;
+}
+.empty .big{font-size:35px}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field.full{grid-column:1/-1}
+.field label{font-size:12px;color:var(--muted);font-weight:600}
+.field input,.field select,.field textarea{
+  width:100%;min-width:0;padding:11px 12px;border:1px solid var(--border);
+  border-radius:10px;background:#fffafd;color:var(--text);
+}
+.field textarea{min-height:85px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--pink);outline:none}
+.form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:17px;flex-wrap:wrap}
+.shopping-list{display:grid;gap:10px}
+.shop-item{
+  border:1px solid var(--border);border-radius:12px;padding:12px;
+  display:flex;gap:12px;align-items:center;min-width:0;
+}
+.shop-item.checked{opacity:.65;background:#fbfff9}
+.shop-item.checked .shop-name{text-decoration:line-through}
+.shop-info{flex:1;min-width:0;overflow-wrap:anywhere}
+.shop-name{font-weight:700}
+.shop-meta{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.6}
+.file-list{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
+.file-chip{display:flex;gap:7px;align-items:center;border-radius:9px;background:var(--pink-light);padding:7px 9px;font-size:12px;max-width:100%;overflow-wrap:anywhere}
+.file-chip a{color:var(--pink-dark)}
+.file-chip button{border:0;background:none;color:#bb526a}
+.file-input{display:none}
+.calc{
+  max-width:410px;margin:auto;border:1px solid var(--border);border-radius:20px;
+  padding:18px;background:#fffafd;box-shadow:var(--shadow);
+}
+.calc-display{
+  width:100%;border:1px solid var(--border);border-radius:13px;
+  padding:17px 13px;background:white;text-align:right;margin-bottom:12px;
+}
+#calcHistory{font-size:12px;color:var(--muted);height:19px;overflow:hidden}
+#calcResult{font-size:clamp(25px,7vw,36px);font-weight:600;color:#a95880;overflow-wrap:anywhere;min-height:44px}
+.calc-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.calc-key{
+  min-width:0;min-height:55px;border:1px solid var(--border);border-radius:12px;
+  background:white;color:var(--text);font-size:18px;
+}
+.calc-key:hover{background:var(--pink-light)}
+.calc-key.op{background:#fff0f6;color:var(--pink-dark)}
+.calc-key.equal{background:var(--pink);color:white;border-color:var(--pink)}
+.calc-key.wide{grid-column:span 2}
+.hint{font-size:12px;color:var(--muted);line-height:1.7;margin-top:12px}
+footer{text-align:center;padding:22px 10px;color:#b59aaa;font-size:11px}
+.toast{
+  position:fixed;bottom:18px;left:50%;transform:translateX(-50%);
+  background:#694655;color:white;padding:12px 18px;border-radius:12px;
+  box-shadow:0 5px 20px #0002;z-index:10;max-width:90vw;
+  font-size:13px;display:none;text-align:center;
+}
+@media(max-width:600px){
+  header{padding:14px}
+  .date-label{display:none}
+  nav{padding:9px 10px;gap:5px}
+  .tab{padding:10px 12px;font-size:13px}
+  main{padding:15px 11px}
+  .stats{gap:7px}
+  .stat{padding:12px 9px}
+  .stat strong{font-size:23px}
+  .stat span{font-size:11px}
+  .heading{align-items:flex-start}
+  h2{font-size:24px}
+  .order{grid-template-columns:minmax(0,1fr);gap:12px}
+  .order-actions{justify-content:flex-start}
+  .form-grid{grid-template-columns:1fr}
+  .field.full{grid-column:auto}
+  .panel{padding:14px}
+  .calc{padding:12px}
+  .calc-key{min-height:50px}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="logo">🧶</div>
+    <div>
+      <h1>Różowy Szydełkownik</h1>
+      <p>Twoje miejsce na włóczkowe pomysły ♡</p>
+    </div>
+  </div>
+  <div class="date-label" id="today"></div>
+</header>
+
+<nav>
+  <button class="tab active" data-page="home">♡ Pulpit</button>
+  <button class="tab" data-page="orders">🧸 Zamówienia</button>
+  <button class="tab" data-page="shopping">🛍️ Lista zakupów</button>
+  <button class="tab" data-page="calculator">＋ Kalkulator</button>
+</nav>
+
+<main>
+  <section class="page active" id="page-home">
+    <div class="heading">
+      <div>
+        <h2>Witaj w swoim kąciku ♡</h2>
+        <p class="subtitle">Wszystkie szydełkowe sprawy w jednym miejscu.</p>
+      </div>
+      <button class="btn pink" onclick="showPage('orders');openOrderForm()">＋ Nowe zamówienie</button>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="icon">🧸</div><strong id="statOrders">0</strong><span>Wszystkie zamówienia</span></div>
+      <div class="stat"><div class="icon">🧶</div><strong id="statPending">0</strong><span>Do zrobienia</span></div>
+      <div class="stat"><div class="icon">🛍️</div><strong id="statShopping">0</strong><span>Rzeczy do kupienia</span></div>
+    </div>
+
+    <div class="panel">
+      <h3>♡ Najbliższe zadania</h3>
+      <div id="homeOrders"></div>
+    </div>
+    <div class="panel">
+      <h3>🌷 Mała przypominajka</h3>
+      <p style="color:var(--muted);line-height:1.8;margin:0">
+        Zapisuj zamówienia, zaznaczaj gotowe prace i uzupełniaj listę włóczek.
+        Każdy mały projekt zaczyna się od jednego oczka!
+      </p>
+    </div>
+  </section>
+
+  <section class="page" id="page-orders">
+    <div class="heading">
+      <div><h2>Zamówienia 🧸</h2><p class="subtitle">Twoje projekty, osoby i postępy.</p></div>
+      <button class="btn pink" onclick="openOrderForm()">＋ Dodaj zamówienie</button>
+    </div>
+    <div class="panel" id="orderFormPanel" hidden>
+      <h3 id="orderFormHeading">♡ Nowe zamówienie</h3>
+      <form id="orderForm">
+        <div class="form-grid">
+          <div class="field">
+            <label for="orderType">Co szydełkujemy?</label>
+            <select id="orderType">
+              <option>Aniołek</option><option>Bombka</option>
+              <option>Chusta</option><option>Maskotka</option>
+              <option>Kwiat</option><option>Serwetka</option>
+              <option>Breloczek</option><option>Inne</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="orderCustom">Własna nazwa (opcjonalnie)</label>
+            <input id="orderCustom" maxlength="100" placeholder="Np. Różowy króliczek">
+          </div>
+          <div class="field">
+            <label for="orderPerson">Dla kogo?</label>
+            <input id="orderPerson" maxlength="120" placeholder="Imię lub osoba">
+          </div>
+          <div class="field">
+            <label for="orderQty">Ile sztuk?</label>
+            <input id="orderQty" type="number" min="1" max="9999" value="1" required>
+          </div>
+          <div class="field full">
+            <label for="orderNotes">Uwagi do zamówienia</label>
+            <textarea id="orderNotes" maxlength="2000" placeholder="Kolor, wzór, termin, rozmiar..."></textarea>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn" type="button" onclick="closeOrderForm()">Anuluj</button>
+          <button class="btn pink" type="submit">Zapisz zamówienie ♡</button>
+        </div>
+      </form>
+    </div>
+    <div class="toolbar" style="margin-bottom:14px">
+      <button class="btn small" onclick="setOrderFilter('all')">Wszystkie</button>
+      <button class="btn small" onclick="setOrderFilter('pending')">Do zrobienia</button>
+      <button class="btn small" onclick="setOrderFilter('done')">Gotowe ✓</button>
+    </div>
+    <div class="order-list" id="ordersList"></div>
+  </section>
+
+  <section class="page" id="page-shopping">
+    <div class="heading">
+      <div><h2>Lista zakupów 🛍️</h2><p class="subtitle">Włóczki, kolory, ilości i pliki pomocnicze.</p></div>
+      <button class="btn pink" onclick="openShoppingForm()">＋ Dodaj do listy</button>
+    </div>
+    <div class="panel" id="shoppingFormPanel" hidden>
+      <h3 id="shoppingFormHeading">♡ Co trzeba kupić?</h3>
+      <form id="shoppingForm">
+        <div class="form-grid">
+          <div class="field">
+            <label for="shopName">Co kupić?</label>
+            <input id="shopName" maxlength="150" required placeholder="Np. Włóczka akrylowa">
+          </div>
+          <div class="field">
+            <label for="shopQty">Ilość</label>
+            <input id="shopQty" maxlength="60" required placeholder="Np. 3 motki, 200 g">
+          </div>
+          <div class="field">
+            <label for="shopColor">Kolor</label>
+            <input id="shopColor" maxlength="100" placeholder="Np. pudrowy róż">
+          </div>
+          <div class="field">
+            <label for="shopNotes">Dodatkowe informacje</label>
+            <input id="shopNotes" maxlength="300" placeholder="Np. numer koloru, grubość">
+          </div>
+          <div class="field full">
+            <label for="shopFiles">Dodaj pliki (zdjęcia, PDF, wzory itp.)</label>
+            <input id="shopFiles" type="file" multiple>
+            <div class="hint">Wybrane pliki zostaną zapisane lokalnie razem z pozycją na liście.</div>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn" type="button" onclick="closeShoppingForm()">Anuluj</button>
+          <button class="btn pink" type="submit">Zapisz na liście ♡</button>
+        </div>
+      </form>
+    </div>
+    <div class="toolbar" style="margin-bottom:14px">
+      <button class="btn small" onclick="setShoppingFilter('all')">Wszystkie</button>
+      <button class="btn small" onclick="setShoppingFilter('todo')">Do kupienia</button>
+      <button class="btn small" onclick="setShoppingFilter('done')">Kupione ✓</button>
+      <button class="btn small" onclick="exportShopping()">Eksportuj listę TXT</button>
+    </div>
+    <div class="shopping-list" id="shoppingList"></div>
+  </section>
+
+  <section class="page" id="page-calculator">
+    <div class="heading">
+      <div><h2>Kalkulator ＋</h2><p class="subtitle">Do obliczeń przy szydełkowaniu i nie tylko.</p></div>
+    </div>
+    <div class="calc">
+      <div class="calc-display">
+        <div id="calcHistory"></div>
+        <div id="calcResult" aria-live="polite">0</div>
+      </div>
+      <div class="calc-grid" id="calcKeys">
+        <button class="calc-key op" data-action="clear">AC</button>
+        <button class="calc-key op" data-action="sign">±</button>
+        <button class="calc-key op" data-action="percent">%</button>
+        <button class="calc-key op" data-action="operator" data-value="/">÷</button>
+
+        <button class="calc-key" data-action="digit" data-value="7">7</button>
+        <button class="calc-key" data-action="digit" data-value="8">8</button>
+        <button class="calc-key" data-action="digit" data-value="9">9</button>
+        <button class="calc-key op" data-action="operator" data-value="*">×</button>
+
+        <button class="calc-key" data-action="digit" data-value="4">4</button>
+        <button class="calc-key" data-action="digit" data-value="5">5</button>
+        <button class="calc-key" data-action="digit" data-value="6">6</button>
+        <button class="calc-key op" data-action="operator" data-value="-">−</button>
+
+        <button class="calc-key" data-action="digit" data-value="1">1</button>
+        <button class="calc-key" data-action="digit" data-value="2">2</button>
+        <button class="calc-key" data-action="digit" data-value="3">3</button>
+        <button class="calc-key op" data-action="operator" data-value="+">+</button>
+
+        <button class="calc-key wide" data-action="digit" data-value="0">0</button>
+        <button class="calc-key" data-action="decimal">,</button>
+        <button class="calc-key equal" data-action="equals">=</button>
+      </div>
+      <p class="hint">Możesz również używać klawiatury komputera: cyfry, +, −, *, /, Enter i Backspace.</p>
+    </div>
+  </section>
+</main>
+
+<footer>Stworzone z miłości do szydełkowania ♡ Różowy Szydełkownik</footer>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+"use strict";
+
+/* Baza IndexedDB przechowuje zamówienia, listę zakupów i załączniki. */
+const DB_NAME = "RozowySzydelkownikDB";
+let db;
+let orders = [];
+let shopping = [];
+let orderFilter = "all";
+let shoppingFilter = "all";
+let editingOrderId = null;
+let editingShopId = null;
+let toastTimer;
+
+const $ = id => document.getElementById(id);
+const uid = () => crypto.randomUUID
+  ? crypto.randomUUID()
+  : Date.now().toString(36)+Math.random().toString(36).slice(2);
+
+function notify(text){
+  $("toast").textContent=text;
+  $("toast").style.display="block";
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>$("toast").style.display="none",2800);
+}
+
+function reqPromise(req){
+  return new Promise((resolve,reject)=>{
+    req.onsuccess=()=>resolve(req.result);
+    req.onerror=()=>reject(req.error);
+  });
+}
+
+function txPromise(tx){
+  return new Promise((resolve,reject)=>{
+    tx.oncomplete=resolve;
+    tx.onerror=()=>reject(tx.error);
+    tx.onabort=()=>reject(tx.error || new Error("Operacja przerwana"));
+  });
+}
+
+async function saveStore(storeName,item){
+  const tx=db.transaction(storeName,"readwrite");
+  tx.objectStore(storeName).put(item);
+  await txPromise(tx);
+}
+
+async function removeStore(storeName,id){
+  const tx=db.transaction(storeName,"readwrite");
+  tx.objectStore(storeName).delete(id);
+  await txPromise(tx);
+}
+
+async function loadStore(storeName){
+  return reqPromise(db.transaction(storeName,"readonly")
+    .objectStore(storeName).getAll());
+}
+
+function openDB(){
+  return new Promise((resolve,reject)=>{
+    const request=indexedDB.open(DB_NAME,1);
+    request.onupgradeneeded=()=>{
+      const database=request.result;
+      database.createObjectStore("orders",{keyPath:"id"});
+      database.createObjectStore("shopping",{keyPath:"id"});
+    };
+    request.onsuccess=()=>resolve(request.result);
+    request.onerror=()=>reject(request.error);
+  });
+}
+
+function showPage(page){
+  document.querySelectorAll(".tab").forEach(button=>{
+    button.classList.toggle("active",button.dataset.page===page);
+  });
+  document.querySelectorAll(".page").forEach(section=>{
+    section.classList.toggle("active",section.id==="page-"+page);
+  });
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+document.querySelectorAll(".tab").forEach(button=>{
+  button.addEventListener("click",()=>showPage(button.dataset.page));
+});
+
+function escapeHTML(value){
+  return String(value ?? "").replace(/[&<>"']/g,char=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  })[char]);
+}
+
+function formatDate(value){
+  if(!value)return "";
+  return new Date(value).toLocaleDateString("pl-PL");
+}
+
+/* ZAMÓWIENIA */
+
+function openOrderForm(id=null){
+  editingOrderId=id;
+  $("orderForm").reset();
+  $("orderQty").value=1;
+  $("orderFormHeading").textContent=id?"♡ Edytuj zamówienie":"♡ Nowe zamówienie";
+
+  if(id){
+    const item=orders.find(x=>x.id===id);
+    if(!item)return;
+    $("orderType").value=item.type;
+    $("orderCustom").value=item.customName || "";
+    $("orderPerson").value=item.person || "";
+    $("orderQty").value=item.qty;
+    $("orderNotes").value=item.notes || "";
+  }
+
+  $("orderFormPanel").hidden=false;
+  $("orderFormPanel").scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+function closeOrderForm(){
+  $("orderFormPanel").hidden=true;
+  editingOrderId=null;
+}
+
+$("orderForm").addEventListener("submit",async event=>{
+  event.preventDefault();
+  const name=$("orderCustom").value.trim();
+  const qty=Number($("orderQty").value);
+
+  if(!Number.isInteger(qty)||qty<1||qty>9999){
+    notify("Wpisz prawidłową liczbę sztuk.");return;
+  }
+
+  const old=editingOrderId?orders.find(x=>x.id===editingOrderId):null;
+  const item={
+    id:editingOrderId || uid(),
+    type:$("orderType").value,
+    customName:name,
+    person:$("orderPerson").value.trim(),
+    qty,
+    notes:$("orderNotes").value.trim(),
+    done:old?.done || false,
+    createdAt:old?.createdAt || new Date().toISOString(),
+    updatedAt:new Date().toISOString()
+  };
+
+  try{
+    await saveStore("orders",item);
+    await refreshAll();
+    closeOrderForm();
+    notify(editingOrderId?"Zamówienie zaktualizowane ♡":"Dodano zamówienie ♡");
+  }catch(error){notify("Nie udało się zapisać zamówienia.");}
+});
+
+function orderName(item){
+  return item.customName || item.type;
+}
+
+function setOrderFilter(filter){
+  orderFilter=filter;
+  renderOrders();
+}
+
+async function toggleOrder(id){
+  const item=orders.find(x=>x.id===id);
+  if(!item)return;
+  item.done=!item.done;
+  item.updatedAt=new Date().toISOString();
+  try{await saveStore("orders",item);await refreshAll();}
+  catch(e){notify("Nie udało się zmienić statusu.");}
+}
+
+async function changeQty(id,delta){
+  const item=orders.find(x=>x.id===id);
+  if(!item)return;
+  item.qty=Math.max(1,Math.min(9999,item.qty+delta));
+  try{await saveStore("orders",item);await refreshAll();}
+  catch(e){notify("Nie udało się zmienić ilości.");}
+}
+
+async function deleteOrder(id){
+  const item=orders.find(x=>x.id===id);
+  if(!item || !confirm("Usunąć zamówienie „"+orderName(item)+"”?"))return;
+  try{
+    await removeStore("orders",id);
+    await refreshAll();
+    notify("Zamówienie usunięte.");
+  }catch(e){notify("Nie udało się usunąć zamówienia.");}
+}
+
+function orderHTML(item){
+  return `
+    <article class="order ${item.done?"completed":""}">
+      <div class="order-main">
+        <div class="order-top">
+          <span class="order-name">${escapeHTML(orderName(item))}</span>
+          <span class="pill ${item.done?"done":""}">${item.done?"Gotowe ✓":"Do zrobienia"}</span>
+        </div>
+        <div class="order-meta">
+          ${item.person?"♡ Dla: "+escapeHTML(item.person)+"<br>":""}
+          ${item.notes?"✎ "+escapeHTML(item.notes)+"<br>":""}
+          Dodano: ${formatDate(item.createdAt)}
+        </div>
+      </div>
+      <div class="order-actions">
+        <div class="qty">
+          <button aria-label="Odejmij sztukę" onclick="changeQty('${item.id}',-1)">−</button>
+          <strong>${item.qty}</strong>
+          <button aria-label="Dodaj sztukę" onclick="changeQty('${item.id}',1)">+</button>
+        </div>
+        <label class="check-label">
+          <input type="checkbox" ${item.done?"checked":""}
+            onchange="toggleOrder('${item.id}')"> Zrobione
+        </label>
+        <button class="btn small" onclick="openOrderForm('${item.id}')">Edytuj</button>
+        <button class="btn small danger" onclick="deleteOrder('${item.id}')">Usuń</button>
+      </div>
+    </article>`;
+}
+
+function renderOrders(){
+  const list=$("ordersList");
+  const visible=orders.filter(item=>
+    orderFilter==="all" ||
+    (orderFilter==="pending"&&!item.done) ||
+    (orderFilter==="done"&&item.done)
+  );
+  list.innerHTML=visible.length
+    ?visible.map(orderHTML).join("")
+    :'<div class="empty"><div class="big">🧶</div>Brak zamówień w tej kategorii.<br>Dodaj coś pięknego!</div>';
+
+  const recent=orders.filter(x=>!x.done).slice(0,4);
+  $("homeOrders").innerHTML=recent.length
+    ?`<div class="order-list">${recent.map(orderHTML).join("")}</div>`
+    :'<div class="empty"><div class="big">🌸</div>Nie masz nic do zrobienia. Czas na nowy projekt!</div>';
+}
+
+/* LISTA ZAKUPÓW */
+
+function openShoppingForm(id=null){
+  editingShopId=id;
+  $("shoppingForm").reset();
+  $("shoppingFormHeading").textContent=id?"♡ Edytuj pozycję":"♡ Co trzeba kupić?";
+
+  if(id){
+    const item=shopping.find(x=>x.id===id);
+    if(!item)return;
+    $("shopName").value=item.name;
+    $("shopQty").value=item.qty;
+    $("shopColor").value=item.color || "";
+    $("shopNotes").value=item.notes || "";
+  }
+
+  $("shoppingFormPanel").hidden=false;
+  $("shoppingFormPanel").scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+function closeShoppingForm(){
+  $("shoppingFormPanel").hidden=true;
+  editingShopId=null;
+}
+
+$("shoppingForm").addEventListener("submit",async event=>{
+  event.preventDefault();
+  const old=editingShopId?shopping.find(x=>x.id===editingShopId):null;
+  const selectedFiles=Array.from($("shopFiles").files || []);
+  const totalSize=selectedFiles.reduce((sum,file)=>sum+file.size,0);
+
+  if(totalSize>30*1024*1024){
+    notify("Załączniki przekraczają 30 MB. Wybierz mniejsze pliki.");
+    return;
+  }
+
+  try{
+    const newFiles=await Promise.all(selectedFiles.map(async file=>({
+      id:uid(),name:file.name,type:file.type || "application/octet-stream",
+      size:file.size,blob:file,lastModified:file.lastModified
+    })));
+
+    const item={
+      id:editingShopId || uid(),
+      name:$("shopName").value.trim(),
+      qty:$("shopQty").value.trim(),
+      color:$("shopColor").value.trim(),
+      notes:$("shopNotes").value.trim(),
+      done:old?.done || false,
+      files:[...(old?.files || []),...newFiles],
+      createdAt:old?.createdAt || new Date().toISOString(),
+      updatedAt:new Date().toISOString()
+    };
+
+    await saveStore("shopping",item);
+    await refreshAll();
+    closeShoppingForm();
+    notify(editingShopId?"Pozycja zaktualizowana ♡":"Dodano do listy ♡");
+  }catch(error){
+    console.error(error);
+    notify("Nie udało się zapisać. Sprawdź ilość wolnego miejsca.");
+  }
+});
+
+function setShoppingFilter(filter){
+  shoppingFilter=filter;
+  renderShopping();
+}
+
+async function toggleShopping(id){
+  const item=shopping.find(x=>x.id===id);
+  if(!item)return;
+  item.done=!item.done;
+  try{await saveStore("shopping",item);await refreshAll();}
+  catch(e){notify("Nie udało się zapisać statusu.");}
+}
+
+async function deleteShopping(id){
+  const item=shopping.find(x=>x.id===id);
+  if(!item||!confirm("Usunąć „"+item.name+"” z listy?"))return;
+  try{
+    await removeStore("shopping",id);
+    await refreshAll();
+    notify("Pozycja usunięta.");
+  }catch(e){notify("Nie udało się usunąć pozycji.");}
+}
+
+async function removeAttachment(itemId,fileId){
+  const item=shopping.find(x=>x.id===itemId);
+  if(!item)return;
+  item.files=(item.files || []).filter(file=>file.id!==fileId);
+  try{
+    await saveStore("shopping",item);
+    await refreshAll();
+    notify("Załącznik usunięty.");
+  }catch(e){notify("Nie udało się usunąć pliku.");}
+}
+
+function renderShopping(){
+  const list=$("shoppingList");
+  const visible=shopping.filter(item=>
+    shoppingFilter==="all" ||
+    (shoppingFilter==="todo"&&!item.done) ||
+    (shoppingFilter==="done"&&item.done)
+  );
+
+  if(!visible.length){
+    list.innerHTML='<div class="empty"><div class="big">🛍️</div>Lista jest pusta.<br>Dodaj włóczkę, szydełka lub inne potrzebne rzeczy.</div>';
+    return;
+  }
+
+  list.innerHTML=visible.map(item=>{
+    const files=(item.files || []).map(file=>`
+      <div class="file-chip">
+        <span>📎</span>
+        <a href="#" onclick="downloadAttachment(event,'${item.id}','${file.id}')">${escapeHTML(file.name)}</a>
+        <button title="Usuń załącznik" onclick="removeAttachment('${item.id}','${file.id}')">×</button>
+      </div>`).join("");
+
+    return `
+      <article class="shop-item ${item.done?"checked":""}">
+        <input type="checkbox" aria-label="Oznacz jako kupione"
+          ${item.done?"checked":""} onchange="toggleShopping('${item.id}')">
+        <div class="shop-info">
+          <div class="shop-name">${escapeHTML(item.name)}</div>
+          <div class="shop-meta">
+            Ilość: ${escapeHTML(item.qty)}
+            ${item.color?" · Kolor: "+escapeHTML(item.color):""}
+            ${item.notes?"<br>"+escapeHTML(item.notes):""}
+          </div>
+          ${files?'<div class="file-list">'+files+'</div>':""}
+        </div>
+        <div class="toolbar">
+          <button class="btn small" onclick="openShoppingForm('${item.id}')">Edytuj</button>
+          <button class="btn small danger" onclick="deleteShopping('${item.id}')">Usuń</button>
+        </div>
+      </article>`;
+  }).join("");
+}
+
+async function downloadAttachment(event,itemId,fileId){
+  event.preventDefault();
+  const item=shopping.find(x=>x.id===itemId);
+  const file=item?.files?.find(x=>x.id===fileId);
+  if(!file)return;
+
+  const url=URL.createObjectURL(file.blob);
+  const a=document.createElement("a");
+  a.href=url;a.download=file.name;
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+function exportShopping(){
+  const text=shopping.map(item=>
+    `${item.done?"[x]":"[ ]"} ${item.name} | Ilość: ${item.qty}`+
+    `${item.color?" | Kolor: "+item.color:""}`+
+    `${item.notes?" | "+item.notes:""}`
+  ).join("\n");
+
+  const blob=new Blob([text || "Lista zakupów jest pusta."],{type:"text/plain;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;a.download="lista-zakupow-szydelkownik.txt";
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+/* KALKULATOR: bez eval(), z obsługą klawiatury i błędów. */
+
+let calcValue="0";
+let calcPrevious=null;
+let calcOperator=null;
+let calcWaiting=false;
+let calcHistoryText="";
+let calcError=false;
+
+function renderCalc(){
+  $("calcResult").textContent=calcValue.replace(".",",");
+  $("calcHistory").textContent=calcHistoryText;
+}
+
+function clearCalc(){
+  calcValue="0";calcPrevious=null;calcOperator=null;
+  calcWaiting=false;calcHistoryText="";calcError=false;
+  renderCalc();
+}
+
+function inputDigit(digit){
+  if(calcError)clearCalc();
+  if(calcWaiting){calcValue=digit;calcWaiting=false;}
+  else if(calcValue==="0")calcValue=digit;
+  else if(calcValue.replace("-","").length<16)calcValue+=digit;
+  renderCalc();
+}
+
+function inputDecimal(){
+  if(calcError)clearCalc();
+  if(calcWaiting){calcValue="0.";calcWaiting=false;}
+  else if(!calcValue.includes("."))calcValue+=".";
+  renderCalc();
+}
+
+function calculate(a,b,op){
+  switch(op){
+    case "+":return a+b;
+    case "-":return a-b;
+    case "*":return a*b;
+    case "/":return b===0?null:a/b;
+    default:return b;
+  }
+}
+
+function formatNumber(value){
+  if(!Number.isFinite(value))return "Błąd";
+  if(Math.abs(value)>999999999999999)return value.toExponential(7);
+  return String(Number(value.toPrecision(12)));
+}
+
+function chooseOperator(op){
+  if(calcError)clearCalc();
+  const current=Number(calcValue);
+  if(!Number.isFinite(current))return;
+
+  if(calcOperator && !calcWaiting){
+    const result=calculate(calcPrevious,current,calcOperator);
+    if(result===null){
+      calcValue="Nie można dzielić przez 0";
+      calcError=true;calcPrevious=null;calcOperator=null;
+      renderCalc();return;
+    }
+    calcValue=formatNumber(result);
+    calcPrevious=result;
+  }else{
+    calcPrevious=current;
+  }
+
+  calcOperator=op;
+  calcWaiting=true;
+  calcHistoryText=formatNumber(calcPrevious)+" "+op;
+  renderCalc();
+}
+
+function calculateResult(){
+  if(calcError || !calcOperator || calcPrevious===null)return;
+  const a=calcPrevious,b=Number(calcValue),op=calcOperator;
+  const result=calculate(a,b,op);
+  calcHistoryText=formatNumber(a)+" "+op+" "+formatNumber(b)+" =";
+  if(result===null){
+    calcValue="Nie można dzielić przez 0";calcError=true;
+  }else{
+    calcValue=formatNumber(result);
+  }
+  calcPrevious=null;calcOperator=null;calcWaiting=true;
+  renderCalc();
+}
+
+function calcAction(action,value){
+  if(action==="digit")inputDigit(value);
+  else if(action==="decimal")inputDecimal();
+  else if(action==="clear")clearCalc();
+  else if(action==="operator")chooseOperator(value);
+  else if(action==="equals")calculateResult();
+  else if(action==="sign"){
+    if(!calcError && Number(calcValue)!==0){
+      calcValue=String(-Number(calcValue));renderCalc();
+    }
+  }else if(action==="percent"){
+    if(!calcError){calcValue=formatNumber(Number(calcValue)/100);renderCalc();}
+  }
+}
+
+$("calcKeys").addEventListener("click",event=>{
+  const button=event.target.closest("button[data-action]");
+  if(button)calcAction(button.dataset.action,button.dataset.value);
+});
+
+document.addEventListener("keydown",event=>{
+  if(!$("page-calculator").classList.contains("active"))return;
+  if(event.target.matches("input,textarea,select"))return;
+  if(/^[0-9]$/.test(event.key))inputDigit(event.key);
+  else if(event.key===".")inputDecimal();
+  else if(["+","-","*","/"].includes(event.key))chooseOperator(event.key);
+  else if(event.key==="Enter"||event.key==="=")calculateResult();
+  else if(event.key==="Backspace"){
+    if(!calcError && !calcWaiting)calcValue=calcValue.slice(0,-1)||"0";
+    renderCalc();
+  }else if(event.key==="Escape")clearCalc();
+});
+
+/* PULPIT I ODTWARZANIE STANU */
+
+async function refreshAll(){
+  orders=await loadStore("orders");
+  shopping=await loadStore("shopping");
+  orders.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  shopping.sort((a,b)=>Number(a.done)-Number(b.done) ||
+    new Date(b.createdAt)-new Date(a.createdAt));
+
+  renderOrders();
+  renderShopping();
+
+  $("statOrders").textContent=orders.length;
+  $("statPending").textContent=orders.filter(x=>!x.done).length;
+  $("statShopping").textContent=shopping.filter(x=>!x.done).length;
+}
+
+async function init(){
+  $("today").textContent=new Date().toLocaleDateString("pl-PL",{
+    weekday:"long",day:"numeric",month:"long",year:"numeric"
+  });
+  try{
+    if(!window.indexedDB)throw new Error("Brak obsługi lokalnej bazy danych.");
+    db=await openDB();
+    await refreshAll();
+  }catch(error){
+    console.error(error);
+    notify("Nie udało się otworzyć bazy danych. Sprawdź ustawienia przeglądarki.");
+  }
+}
+
+init();
+</script>
+</body>
+</html>
